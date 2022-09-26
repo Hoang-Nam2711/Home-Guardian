@@ -7,8 +7,6 @@ static BLEUUID SERVICE_UUID("86f548d6-c323-479e-bbc7-defbcf190cd3");
 static BLEUUID SENSOR_UUID("6d58fd7e-dfd1-48e3-a1aa-508a37674586");
 
 const int sensor = 13;
-uint16_t sensorValue =0;
-uint32_t value = 1;
 
 BLEServer *pServer=NULL;
 BLECharacteristic *pCharacteristic=NULL;
