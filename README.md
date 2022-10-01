@@ -14,3 +14,5 @@ PIR Motion Detector Module: https://akizukidenshi.com/catalog/g/gM-14064/
 ESP32-DevKit-32E: https://akizukidenshi.com/catalog/g/gM-15673/
 
 Raspberry Pi v3B+: https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/
+
+### [Updating...]
