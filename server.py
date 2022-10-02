@@ -23,6 +23,6 @@ def main():
 
     #Get sensor value
     human = int.from_bytes(sensor.read(), byteorder=sys.byteorder)
-    print(human)
+    
 
 main()
