@@ -50,11 +50,13 @@ void setup() {
 
 void loop() {
   uint32_t sensorValue = digitalRead(sensor);
+  delay(1000);
   pSensor->setValue((uint8_t*)&sensorValue,1);
   pSensor->notify();
   std::string message = pMessage->getValue();
   if(message == "OK"){
     Serial.println("OK");
   }
-  delay(1000);
+  //Reconnect BLE
+  BLEDevice::startAdvertising();
 }
