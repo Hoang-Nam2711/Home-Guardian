@@ -8,10 +8,12 @@ static BLEUUID SENSOR_UUID("6d58fd7e-dfd1-48e3-a1aa-508a37674586");
 static BLEUUID MESSAGE_UUID("9e3a3fe6-8887-4165-86ac-214c79b17cf2");
 
 const int sensor = 13;
+const int cycle = (3*60+30)*1000; //3mins30s
 
 BLEServer *pServer=NULL;
 BLECharacteristic *pSensor=NULL;
 BLECharacteristic *pMessage=NULL;
+unsigned long lastUpdate = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -49,14 +51,19 @@ void setup() {
 }
 
 void loop() {
-  uint32_t sensorValue = digitalRead(sensor);
-  delay(1000);
-  pSensor->setValue((uint8_t*)&sensorValue,1);
-  pSensor->notify();
-  std::string message = pMessage->getValue();
-  if(message == "OK"){
-    Serial.println("OK");
+  if(millis()-lastUpdate > cycle){
+    lastUpdate = millis()
+    std::string message = pMessage->getValue();
+    //wait for response from Pi
+    while(message != "OK"){
+      //read sensor value
+      uint32_t sensorValue = digitalRead(sensor);
+      delay(1000);
+      //send sensor vale to Pi
+      pSensor->setValue((uint8_t*)&sensorValue,1);
+      pSensor->notify();
+    }
+    //Reconnect BLE
+    BLEDevice::startAdvertising();
   }
-  //Reconnect BLE
-  BLEDevice::startAdvertising();
 }
