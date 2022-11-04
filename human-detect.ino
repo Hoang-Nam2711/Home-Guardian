@@ -12,8 +12,9 @@ const int cycle = (3*60+30)*1000; //3mins30s
 
 BLEServer *pServer=NULL;
 BLECharacteristic *pSensor=NULL;
-BLECharacteristic *pMessage=NULL;
+BLECharacteristic *pAdvertising=NULL;
 unsigned long lastUpdate = 0;
+bool canBreak = false;
 
 void setup() {
   // put your setup code here, to run once:
@@ -38,10 +39,6 @@ void setup() {
                                          BLECharacteristic::PROPERTY_READ|
                                          BLECharacteristic::PROPERTY_NOTIFY
                                        );
-  pMessage = pService->createCharacteristic(
-                                         MESSAGE_UUID,
-                                         BLECharacteristic::PROPERTY_WRITE
-                                       );
 
   // pCharacteristic -> addDescriptor(new BLE2902());
   pService->start();
@@ -51,19 +48,9 @@ void setup() {
 }
 
 void loop() {
-  if(millis()-lastUpdate > cycle){
-    lastUpdate = millis()
-    std::string message = pMessage->getValue();
-    //wait for response from Pi
-    while(message != "OK"){
-      //read sensor value
-      uint32_t sensorValue = digitalRead(sensor);
-      delay(1000);
-      //send sensor vale to Pi
-      pSensor->setValue((uint8_t*)&sensorValue,1);
-      pSensor->notify();
-    }
-    //Reconnect BLE
-    BLEDevice::startAdvertising();
-  }
+  uint32_t sensorValue = digitalRead(sensor);
+  delay(1000);
+  pSensor->setValue((uint8_t*)&sensorValue,1);
+  pSensor->notify();
+  BLEDevice::startAdvertising();
 }
