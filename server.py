@@ -5,10 +5,12 @@ import os
 import datetime
 import time
 import asyncio
-from variable import device,sensorUUID,serviceUUID
+
+#Variable File
+from variable import device,sensorUUID,serviceUUID,myPass
 
 camFolder = "./camVid"
-cycle = 1*60 #5 mins
+cycle = 10 #1 mins
 lastUpdate = time.time()
 
 def camSave():
@@ -20,8 +22,9 @@ def camSave():
 def camera():
     camera=PiCamera()
     camera.start_recording(camSave())
-    time.sleep(60)
+    time.sleep(5)
     camera.stop_recording()
+    camera.close()
 
 def connectDevice():
     connected = False
@@ -31,8 +34,7 @@ def connectDevice():
             server = bluepy.btle.Peripheral(device)
             connected = True
         except:
-            print("Trying...")
-            pass
+            os.popen("sudo -S %s"%("hciconfig hci0 up"), 'w').write(myPass)
 
     #Get service and characteristic
     service = server.getServiceByUUID(serviceUUID)
@@ -52,8 +54,6 @@ async def main(lastUpdate):
             print("A")
             connectDevice()
             lastUpdate = time.time()
-            # lastUpdate = connectDevice()
-            # print(lastUpdate)
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main(lastUpdate))
